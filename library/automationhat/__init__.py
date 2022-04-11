@@ -326,7 +326,7 @@ def is_automation_phat():
 def enable_auto_lights(state):
     global _t_update_lights
 
-    setup()
+    setup(setup_lights=state)
 
     if lights is None:
         return
@@ -346,7 +346,7 @@ def enable_auto_lights(state):
         _t_update_lights = None
 
 
-def setup():
+def setup(setup_lights=True):
     global automation_hat, automation_phat, lights, _ads1015, _is_setup, _t_update_lights
 
     if _is_setup:
@@ -370,11 +370,13 @@ def setup():
 
     _ads1015.set_programmable_gain(4.096)
 
-
-    try:
-        lights = sn3218.SN3218()
-    except (IOError, OSError):
-        pass
+    if setup_lights:
+        try:
+            lights = sn3218.SN3218()
+        except (IOError, OSError):
+            pass
+    else:
+        lights = None
 
     if lights is not None:
         lights.enable()
